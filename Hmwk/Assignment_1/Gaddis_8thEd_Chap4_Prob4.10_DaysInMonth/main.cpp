@@ -43,54 +43,28 @@ int main(int argc, char** argv)
  */
 void numDaysInMonth(int month, int year)
 {
-    switch (month)
+    if (month == 1 || month == 3 || month == 5 || month == 7 || month == 8
+            || month == 10 || month == 12)
     {
-        case 1:
-            cout << "There are 31 days in that month.";
-            break;
-        case 2:
-            if (year % 100 == 0 && year % 400 == 0)
-            {
-                cout << "There are 29 days in that month.";
-            }
-            else if (year % 100 != 0 && year % 4 == 0)
-            {
-                cout << "There are 29 days in that month.";
-            }
-            else
-            {
-                cout << "There are 28 days in that month.";
-            }
-            break;
-        case 3:
-            cout << "There are 31 days in that month.";
-            break;
-        case 4:
-            cout << "There are 30 days in that month.";
-            break;
-        case 5:
-            cout << "There are 31 days in that month.";
-            break;
-        case 6:
-            cout << "There are 30 days in that month.";
-            break;
-        case 7:
-            cout << "There are 31 days in that month.";
-            break;
-        case 8:
-            cout << "There are 31 days in that month.";
-            break;
-        case 9:
-            cout << "There are 30 days in that month.";
-            break;
-        case 10:
-            cout << "There are 31 days in that month.";
-            break;
-        case 11:
-            cout << "There are 30 days in that month.";
-            break;
-        case 12:
-            cout << "There are 31 days in that month.";
-            break;
+        cout << "There are 31 days in that month.";
+    }
+    else if (month == 2)
+    {
+        if (year % 100 == 0 && year % 400 == 0)
+        {
+            cout << "There are 29 days in that month.";
+        }
+        else if (year % 100 != 0 && year % 4 == 0)
+        {
+            cout << "There are 29 days in that month.";
+        }
+        else
+        {
+            cout << "There are 28 days in that month.";
+        }
+    }
+    else
+    {
+        cout << "There are 30 days in that month.";
     }
 }

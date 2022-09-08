@@ -1,7 +1,7 @@
 /* 
  * File:   main.cpp
  * Author: Christopher Stark
- * Created on September 5, 2022, 12:45 PM
+ * Created on September 7, 2022, 12:30 PM
  * Purpose: File IO with 2D array of Rain,Cloudy,Sunny days
  */
 
