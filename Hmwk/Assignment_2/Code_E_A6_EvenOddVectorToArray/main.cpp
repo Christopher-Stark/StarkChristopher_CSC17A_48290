@@ -105,21 +105,22 @@ void prntVec(vector<int> even, vector<int> odd, int num)//int n is the format se
     cout << setw(num) << "Vector" << setw(num) << "Even" << setw(num) << "Odd" << endl;
     for (int i = 0; i < loops; i++)
     {
-        if (i != even.size())
+        if (i < even.size())
         {
             cout << setw(num * 2) << even[i];
         }
         else
         {
             cout << setw(num * 2) << " ";
+            if(i > odd.size()) cout << endl;
         }
-        if(i != odd.size())
+        if(i < odd.size())
         {
         cout << setw(num) << odd[i] << endl;
         }
         else
         {
-            cout << setw(num * 2) << " ";
+            cout << setw(num) << " " << endl;
         }
     }
 }
@@ -138,21 +139,22 @@ void prntAry(const int array[][COLMAX], int evenSize, int oddSize, int num)
     cout << setw(num) << "Array" << setw(num) << "Even" << setw(num) << "Odd" << endl;
     for (int i = 0; i < loops; i++)
     {
-        if (i != evenSize)
+        if (i < evenSize)
         {
             cout << setw(num * 2) << array[i][0];
         }
         else
         {
             cout << setw(num * 2) << " ";
+            if(i > oddSize) cout << endl;
         }
-        if(i != oddSize)
+        if(i < oddSize)
         {
         cout << setw(num) << array[i][1] << endl;
         }
         else
         {
-            cout << setw(num * 2) << " ";
+            cout << setw(num) << " " << endl;
         }
     }
 }
