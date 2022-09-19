@@ -43,7 +43,7 @@ int main(int argc, char** argv) {
         for (int j = 0; j < rowIn; j++)
         {
             cin >> input;
-            array[j][i] = input;
+            array[i][j] = input;
         }
     }
     //print(array,rowIn,colIn);//Test

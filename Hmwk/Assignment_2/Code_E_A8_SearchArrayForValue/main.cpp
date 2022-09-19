@@ -23,7 +23,7 @@ using namespace std;
 //srch1 Input->sentence, pattern, start position Output-> position found
 //Remember arrays start at index/position 0
 //srchAll Input->sentence, pattern Output->position array
-int srch1(const char sntnce[], const char pattern[], int index, int counter); //Search for 1 occurrence
+int srch1(const char sntnce[], const char pattern[], int index); //Search for 1 occurrence
 int srchAll(char sntnce[], char pattern[], int match[]); //Search for all occurrences
 void print(const char sntnce[]); //Print the character arrays
 void printInt(const int match[], int size); //Print the array of indexes where the pattern found
@@ -63,31 +63,33 @@ int main(int argc, char** argv)
     return 0;
 }
 
-int srch1(const char sntnce[], const char pattern[], int index, int counter)//Search for 1 occurrence
+int srch1(const char sntnce[], const char pattern[], int index)//Search for 1 occurrence
 {
-    const char temp = sntnce[index];
-    if (pattern[counter] == temp)
+    int sntLen = strlen(sntnce);
+    for (int i = index; i < sntLen; i++)
     {
-        return index;
+        if (pattern[0] == sntnce[i])
+        {
+            return i;
+        }
     }
-    else
-    {
-        return -1;
-    }
+    return -1;
 }
 
 int srchAll(char sntnce[], char pattern[], int match[])//Search for all occurrences
 {
     int size = 0;
-    int counter = 0;
-    
-    for (int i = 0; i < strlen(sntnce); i++)
+    int index = 0;
+    int sntLen = strlen(sntnce);
+    int patLen = strlen(pattern);
+    for (int i = 0; i < sntLen - patLen ; i++)
     {
-        if (srch1(sntnce, pattern, i, counter) != -1 && counter < strlen(pattern))
+        int fMatch = srch1(sntnce, pattern, index);
+        if (fMatch != -1)
         {
-            match[size] = i;
+            match[size] = fMatch;
             size++;
-            counter++;
+            index = fMatch + 1;
         }
     }
     return size;
@@ -95,7 +97,7 @@ int srchAll(char sntnce[], char pattern[], int match[])//Search for all occurren
 
 void print(const char sntnce[])//Print the character arrays
 {
-    for (int i = 0; i <= strlen(sntnce); i++)
+    for (int i = 0; i < strlen(sntnce); i++)
     {
         cout << sntnce[i];
     }
@@ -110,6 +112,6 @@ void printInt(const int match[], int size) //Print the array of indexes where th
     }
     for (int i = 0; i < size; i++)
     {
-        cout << match[i] << " ";
+        cout << match[i] << endl;
     }
 }

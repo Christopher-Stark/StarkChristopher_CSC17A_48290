@@ -61,16 +61,26 @@ int main(int argc, char** argv)
     return 0;
 }
 
-bool inRange(const char [], unsigned short &)//Output true,unsigned or false
+bool inRange(const char digits[], unsigned short &unShort)//Output true,unsigned or false
 {
-
+    return true;
 }
 
-bool reverse(unsigned short, signed short &)//Output true,short or false
+bool reverse(unsigned short unShort, signed short &snShort)//Output true,short or false
 {
+    return true;
 }
 
-short subtrct(signed short, int)
+short subtrct(signed short snShort, int num)
 {
-
+    signed short newNum;
+    if (snShort - num > -1)
+    {
+        newNum = snShort - num;
+    }
+    else
+    {
+        return snShort;
+    }
+    return newNum;
 }
