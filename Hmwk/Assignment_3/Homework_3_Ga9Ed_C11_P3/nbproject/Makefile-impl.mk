@@ -24,7 +24,7 @@ CLEAN_SUBPROJECTS=${CLEAN_SUBPROJECTS_${SUBPROJECTS}}
 
 
 # Project Name
-PROJECTNAME=Code_E_ModeDynamicMemory
+PROJECTNAME=Homework_3_Ga9Ed_C11_P3
 
 # Active Configuration
 DEFAULTCONF=Debug

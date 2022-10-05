@@ -9,19 +9,19 @@ CND_DISTDIR=dist
 # Debug configuration
 CND_PLATFORM_Debug=Cygwin-Windows
 CND_ARTIFACT_DIR_Debug=dist/Debug/Cygwin-Windows
-CND_ARTIFACT_NAME_Debug=code_e_modedynamicmemory
-CND_ARTIFACT_PATH_Debug=dist/Debug/Cygwin-Windows/code_e_modedynamicmemory
+CND_ARTIFACT_NAME_Debug=homework_3_ga9ed_c11_p3
+CND_ARTIFACT_PATH_Debug=dist/Debug/Cygwin-Windows/homework_3_ga9ed_c11_p3
 CND_PACKAGE_DIR_Debug=dist/Debug/Cygwin-Windows/package
-CND_PACKAGE_NAME_Debug=codeemodedynamicmemory.tar
-CND_PACKAGE_PATH_Debug=dist/Debug/Cygwin-Windows/package/codeemodedynamicmemory.tar
+CND_PACKAGE_NAME_Debug=homework3ga9edc11p3.tar
+CND_PACKAGE_PATH_Debug=dist/Debug/Cygwin-Windows/package/homework3ga9edc11p3.tar
 # Release configuration
 CND_PLATFORM_Release=Cygwin-Windows
 CND_ARTIFACT_DIR_Release=dist/Release/Cygwin-Windows
-CND_ARTIFACT_NAME_Release=code_e_modedynamicmemory
-CND_ARTIFACT_PATH_Release=dist/Release/Cygwin-Windows/code_e_modedynamicmemory
+CND_ARTIFACT_NAME_Release=homework_3_ga9ed_c11_p3
+CND_ARTIFACT_PATH_Release=dist/Release/Cygwin-Windows/homework_3_ga9ed_c11_p3
 CND_PACKAGE_DIR_Release=dist/Release/Cygwin-Windows/package
-CND_PACKAGE_NAME_Release=codeemodedynamicmemory.tar
-CND_PACKAGE_PATH_Release=dist/Release/Cygwin-Windows/package/codeemodedynamicmemory.tar
+CND_PACKAGE_NAME_Release=homework3ga9edc11p3.tar
+CND_PACKAGE_PATH_Release=dist/Release/Cygwin-Windows/package/homework3ga9edc11p3.tar
 #
 # include compiler specific variables
 #
