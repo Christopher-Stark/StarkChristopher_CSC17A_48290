@@ -1,8 +1,8 @@
 /* 
  * File:   main.cpp
  * Author: Christopher Stark
- * Created on September 5, 2022, 11:50 AM
- * Purpose:
+ * Created on October 4, 2022, 5:00 PM
+ * Purpose: Get monthly expense budget and calculate monthly costs
  */
 
 //System Level Libraries
