@@ -10,11 +10,13 @@
 #include <iostream>
 #include <string>
 #include <iomanip>
+#include <cmath>
 using namespace std;
 
 //User Libraries
 #include "bank.h"//Problem 1 header file
 #include "GrossPay.h"//Problem 2 header file
+#include "primes.h"//Problem 7 header file
 //Global Constants - Math/Physics Constants, Conversions,
 //                   2-D Array Dimensions
 
@@ -46,7 +48,8 @@ void displayFact();
 //Problem 6 Functions
 
 //Problem 7 Functions
-
+Primes *factor(int num, int &index);
+void prntPrm(Primes *a, int num, int index);
 //Execution Begins Here
 int main(int argc, char** argv) {
     //Declare Variables
@@ -85,13 +88,13 @@ void menu(){
     cout<<"Type 4 for Problem 4 - Phone 4 digit encryption"<<endl;
     cout<<"Type 5 for Problem 5 - Highest factorial for data type before incorrect value/error"<<endl;
     cout<<"Type 6 for Problem 6 - Conversion/NASA Format results"<<endl;
-    cout<<"Type 7 for Problem 7 - Factor int into prime numbers"<<endl<<endl;
+    cout<<"Type 7 for Problem 7 - Factor primes of integer"<<endl<<endl;
 }
 /**
  * Problem 1 Bank information Main
  */
 void prblm1(){
-    cout<<"Problem 1 - Bank information"<<endl;
+    cout<<"****Problem 1 - Bank information****"<<endl;
     int chkSize = 0, depSize = 0; //Size for check & deposit array
     float nwBlnc = 0.00; //Keeps track of new balance
     BankAct *person = nullptr; //Pointer for struct
@@ -100,7 +103,7 @@ void prblm1(){
     bnkDat(person, chkSize, depSize, nwBlnc); //Function to adjust Bank struct object
     dataDisplay(person, depSize, chkSize); //Displays struct data
     nwBalance(nwBlnc); //Takes balance after deposits/Withdraws and determines OD Fee
-
+    cout << endl;
     delete person; //Deletes dynamic struct
 }
 
@@ -108,7 +111,7 @@ void prblm1(){
  * Problem 2 Employee Pay Main
  */
 void prblm2(){
-    cout<<"Problem 2 - Employee pay"<<endl;
+    cout<<"****Problem 2 - Employee pay****"<<endl;
     int size;
 
     cout << "Please enter how many employees: ";
@@ -128,7 +131,7 @@ void prblm2(){
  * Problem 3 Stat - declare location of project
  */
 void prblm3(){
-    cout<<"Problem 3 - Stat Function"<<endl;
+    cout<<"****Problem 3 - Stat Function****"<<endl;
     cout << "This problem is included in another project 'Midterm_Q3_Statistics'" << endl;
 }
 
@@ -136,7 +139,7 @@ void prblm3(){
  * Problem 4 Phone/4 digit encryption Main
  */
 void prblm4(){
-    cout<<"problem 4 - Phone 4 digit encryption"<<endl;
+    cout<<"****Problem 4 - Phone 4 digit encryption****"<<endl;
     int num;
     bool redo = false; //Bool for error checking
 
@@ -154,20 +157,34 @@ void prblm4(){
  * Problem 5 Highest Factorial of data type Main
  */
 void prblm5(){
-    cout<<"problem 5 - Highest factorial for data type before incorrect value/error"<<endl;
+    cout<<"****Problem 5 - Highest factorial for data type before incorrect value/error****"<<endl;
     displayFact();//Function for output
 }
 /**
  * Problem 6 Conversion/NASA Format Main
  */
 void prblm6(){
-    cout<<"problem 6 - Conversion/NASA Format results"<<endl;
+    cout<<"****Problem 6 - Conversion/NASA Format results****"<<endl;
 }
 /**
  * Problem 7 Factor int into primes Main
  */
 void prblm7(){
-    cout<<"problem 7 - Factor int into prime numbers"<<endl;
+    cout<<"****Problem 7 - Factor primes of integer****"<<endl;
+    int num, index = 0;
+    Primes *data;
+    cout << "Please enter a positive # between 2-265000 to factor it's primes: ";
+    cin >> num;
+    while (num < 0)
+    {
+        cout << "Please enter a positive # between 2-265000 to factor it's primes: ";
+        cin >> num;
+    }
+
+    data = factor(num, index);
+    prntPrm(data, num, index);
+    cout << endl;
+    delete data;
 }
 // ***** My Functions for problem 1 - Bank info *****
 /**
@@ -602,3 +619,78 @@ void displayFact()
 }
 
 // ***** My Functions for problem 6 - Conversions to NASA 4 byte float format
+
+
+
+// ***** My Functions for problem 7 - Integer Prime Factors
+/**
+ * Takes structure and stores prime factors of an integer with formula
+ * @param num
+ * @param index
+ * @return 
+ */
+Primes *factor(int num, int &index)
+{
+    int start = num, size = sqrt(num);//Size for array
+    int cnt = 0;//Counter
+    Primes *data = new Primes;
+    data->prime = new Prime[size];//Dynamic struct array
+
+    while (start % 2 == 0)//Formula for finding all prime factors
+    {
+        start = start / 2;
+        cnt++;
+    }
+    if (cnt > 0)
+    {
+        data->nPrimes += cnt;
+        data->prime[index].power = cnt;
+        data->prime[index].prime = 2;
+        index++;
+    }
+    for (int i = 3; i <= sqrt(start); i = i + 2)
+    {
+        cnt = 0;
+        while (start % i == 0)
+        {
+            cnt++;
+            start = start / i;
+        }
+        if (cnt > 0)
+        {
+            data->nPrimes += cnt;
+            data->prime[index].power = cnt;
+            data->prime[index].prime = i;
+            index++;
+        }
+    }
+    if (start > 2)
+    {
+        data->nPrimes += cnt;
+        data->prime[index].power = 1;
+        data->prime[index].prime = start;
+    }
+    else
+    {
+        index--;
+    }
+    return data;//Returns data to object in main
+}
+/**
+ * Displays struct array data
+ * @param a
+ * @param num
+ * @param index
+ */
+void prntPrm(Primes *a, int num, int index)
+{
+    cout << "The factor primes of " << num << " = ";
+    for (int i = 0; i <= index; i++)
+    {
+        cout << a->prime[i].prime << "^" << static_cast<int> (a->prime[i].power);
+        if (i < index)
+        {
+            cout << " * ";
+        }
+    }
+}

@@ -4,8 +4,6 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
-      <itemPath>GrossPay.h</itemPath>
-      <itemPath>bank.h</itemPath>
       <itemPath>primes.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
@@ -39,10 +37,6 @@
       </toolsSet>
       <compileType>
       </compileType>
-      <item path="GrossPay.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="bank.h" ex="false" tool="3" flavor2="0">
-      </item>
       <item path="main.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="primes.h" ex="false" tool="3" flavor2="0">
@@ -68,10 +62,6 @@
           <developmentMode>5</developmentMode>
         </asmTool>
       </compileType>
-      <item path="GrossPay.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="bank.h" ex="false" tool="3" flavor2="0">
-      </item>
       <item path="main.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="primes.h" ex="false" tool="3" flavor2="0">
