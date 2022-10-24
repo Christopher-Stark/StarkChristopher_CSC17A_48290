@@ -11,6 +11,7 @@
 #include <string>
 #include <iomanip>
 #include <cmath>
+#include <sstream>
 using namespace std;
 
 //User Libraries
@@ -39,8 +40,8 @@ void displayData(const Employ *a, int size);
 void totalPay(Employ *a, int size);
 void romanNumConv(const Employ *a, int index);
 //Problem 4 Functions
-bool errorCheck(int &num, bool &error);
-void encrypt(int &num);
+bool errorCheck(int &num, bool &error, string strNum);
+void encrypt(int &num, bool &ldZero);
 void decrypt(int &num);
 int reverseMod(int remain, int mod, int a);
 //Problem 5 Functions
@@ -141,15 +142,24 @@ void prblm3(){
 void prblm4(){
     cout<<"****Problem 4 - Phone 4 digit encryption****"<<endl;
     int num;
+    bool ldZero = false;
+    string strNum;
+    stringstream input;
     bool redo = false; //Bool for error checking
 
     cout << "Please enter a 4 digit number (0-7's only) that you want encrypted: ";
-    cin >> num; //Int entry from user
+    cin >> strNum; //Int entry from user
+    input << strNum;
+    input >> num;
 
-
-    errorCheck(num, redo); //Error checking function
-    encrypt(num); //Encrypts num data
-    cout << "The number after encryption is: " << num << endl;
+    errorCheck(num, redo, strNum); //Error checking function
+    encrypt(num, ldZero); //Encrypts num data
+    cout << "The number after encryption is: ";
+    if(ldZero)
+    {
+        cout << "0";
+    }
+    cout << num << endl;
     decrypt(num);
     cout << "The number after decryption is: " << num << endl;
 }
@@ -175,7 +185,7 @@ void prblm7(){
     Primes *data;
     cout << "Please enter a positive # between 2-265000 to factor it's primes: ";
     cin >> num;
-    while (num < 0)
+    while (num < 0 || num > 265000)
     {
         cout << "Please enter a positive # between 2-265000 to factor it's primes: ";
         cin >> num;
@@ -195,20 +205,23 @@ void prblm7(){
  */
 void bnkDat(BankAct *a, int &chkSize, int &depSize, float &nwBlnc)
 {
-    int actNum; //Account number
+    int actNum;//Account number string
+    string actStr;
     float *checks = new float[chkSize]; //Dynamic Array for checks
     float *deposits = new float[depSize]; //Dynamic Array for deposits
     string actName, addrs; //Account name and address
     float blnc, chckDep, chckWtd; // Monthly Balance, amnt of check, amnt of deposit
-
+    
     cout << "Enter account# five digits or less: ";
-    cin >> actNum;
-    while (actNum > 99999 || actNum < 0)//Error checking for 5 digits and positive#
+    cin >> actStr;
+    actNum = stoi(actStr);
+    while (actNum > 99999 || actNum < 0 || actStr.size() > 5)//Error checking for 5 digits and positive#
     {
         cout << "Enter account# five digits or less: ";
-        cin >> actNum;
+        cin >> actStr;
+        actNum = stoi(actStr);
     }
-    a->actNum = actNum;
+    a->actNum = actStr;
 
     cout << "What is the name on the account: ";
     cin.ignore();
@@ -381,22 +394,30 @@ void totalPay(Employ *a, int size)
 {
     //Remainder when calculating overtime, increase pay rates based off hours
     float remain = 0.00;
-    int str = 20, dHrs = 10, trip = 40, dPay = 2, tPay = 3;
+    int str = 20, dHrs = 20, trip = 40, dPay = 2, tPay = 3;
 
     for (int emp = 0; emp < size; emp++)
     {
         if (a[emp].hrs > trip)//Determines straight,double,triple time amounts
         {
+            remain = fmod(a[emp].hrs,trip);
+            a[emp].totPay += remain * (a[emp].rtPay * tPay);
+            a[emp].totPay += dHrs * (a[emp].rtPay * dPay);
             a[emp].totPay += str * a[emp].rtPay;
-            remain = (a[emp].hrs - trip);
-            a[emp].totPay += (dHrs * a[emp].rtPay) * dPay;
-            a[emp].totPay += (remain * a[emp].rtPay) * tPay;
         }
         else if (a[emp].hrs > str && a[emp].hrs <= trip)//Determines straight,double
         {
-            a[emp].totPay += str * a[emp].rtPay;
-            remain += a[emp].hrs - str;
-            a[emp].totPay += (remain * a[emp].rtPay) * dPay;
+            if (a[emp].hrs == trip)
+            {
+                a[emp].totPay += dHrs * (a[emp].rtPay * dPay);
+                a[emp].totPay += str * a[emp].rtPay;
+            }
+            else
+            {
+                remain = fmod(a[emp].hrs,str);
+                a[emp].totPay += remain * (a[emp].rtPay * dPay);
+                a[emp].totPay += str * a[emp].rtPay;
+            }
         }
         else//Else just standard straight pay
         {
@@ -476,7 +497,7 @@ void romanNumConv(const Employ *a, int index)
  * @param error
  * @return 
  */
-bool errorCheck(int &num, bool &error)
+bool errorCheck(int &num, bool &error, string strNum)
 {
     do
     {
@@ -489,7 +510,7 @@ bool errorCheck(int &num, bool &error)
         num1 = num / 1000 % 10;
         //Checks for > 7 and 4 digits
         if (num1 > numMax || num2 > numMax || num3 > numMax || num4 > numMax ||
-                num < 1000 || num > 7777)
+                num < 0 || num > 7777 || strNum.size() > 4)
         {
             error = true;
         }
@@ -511,7 +532,7 @@ bool errorCheck(int &num, bool &error)
  * Encrypts user integer using modulus math
  * @param num
  */
-void encrypt(int &num)
+void encrypt(int &num, bool &ldZero)
 {
     int num1, num2, num3, num4;
 
@@ -523,6 +544,10 @@ void encrypt(int &num)
     num1 = (num1 + 6) % 8; //Replace each digit 1234
     num2 = (num2 + 6) % 8;
     num3 = (num3 + 6) % 8;
+    if(num3 == 0)
+    {
+        ldZero = true;
+    }
     num4 = (num4 + 6) % 8;
 
     int temp;

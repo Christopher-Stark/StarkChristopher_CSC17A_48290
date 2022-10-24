@@ -10,6 +10,7 @@
 #include <iostream>
 #include <string>
 #include <iomanip>
+#include <sstream>
 
 using namespace std;
 
@@ -18,8 +19,8 @@ using namespace std;
 //Global Constants
 
 //Function Prototypes0
-bool errorCheck(int &num, bool &error);
-void encrypt(int &num);
+bool errorCheck(int &num, bool &error, string strNum);
+void encrypt(int &num, bool &ldZero);
 void decrypt(int &num);
 int reverseMod(int remain, int mod, int a);
 //Execution begins here!
@@ -27,15 +28,24 @@ int reverseMod(int remain, int mod, int a);
 int main(int argc, char** argv)
 {
     int num;
+    bool ldZero = false;
+    string strNum;
+    stringstream input;
     bool redo = false; //Bool for error checking
 
     cout << "Please enter a 4 digit number (0-7's only) that you want encrypted: ";
-    cin >> num; //Int entry from user
+    cin >> strNum; //Int entry from user
+    input << strNum;
+    input >> num;
 
-
-    errorCheck(num, redo); //Error checking function
-    encrypt(num); //Encrypts num data
-    cout << "The number after encryption is: " << num << endl;
+    errorCheck(num, redo, strNum); //Error checking function
+    encrypt(num, ldZero); //Encrypts num data
+    cout << "The number after encryption is: ";
+    if(ldZero)
+    {
+        cout << "0";
+    }
+    cout << num << endl;
     decrypt(num);
     cout << "The number after decryption is: " << num << endl;
 
@@ -52,7 +62,7 @@ int main(int argc, char** argv)
  * @param error
  * @return 
  */
-bool errorCheck(int &num, bool &error)
+bool errorCheck(int &num, bool &error, string strNum)
 {
     do
     {
@@ -65,7 +75,7 @@ bool errorCheck(int &num, bool &error)
         num1 = num / 1000 % 10;
         //Checks for > 7 and 4 digits
         if (num1 > numMax || num2 > numMax || num3 > numMax || num4 > numMax ||
-                num < 1000 || num > 7777)
+                num < 0 || num > 7777 || strNum.size() > 4)
         {
             error = true;
         }
@@ -87,7 +97,7 @@ bool errorCheck(int &num, bool &error)
  * Encrypts user integer using modulus math
  * @param num
  */
-void encrypt(int &num)
+void encrypt(int &num, bool &ldZero)
 {
     int num1, num2, num3, num4;
 
@@ -99,6 +109,10 @@ void encrypt(int &num)
     num1 = (num1 + 6) % 8; //Replace each digit 1234
     num2 = (num2 + 6) % 8;
     num3 = (num3 + 6) % 8;
+    if(num3 == 0)
+    {
+        ldZero = true;
+    }
     num4 = (num4 + 6) % 8;
 
     int temp;

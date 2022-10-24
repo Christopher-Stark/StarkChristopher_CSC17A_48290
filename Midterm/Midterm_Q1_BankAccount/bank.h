@@ -1,6 +1,6 @@
 /* 
  * File:   structs.h
- * Author: cbsbn
+ * Author: Chris Stark
  *
  * Created on October 18, 2022, 8:17 AM
  */
@@ -10,7 +10,7 @@
 
 struct BankAct
 {
-    int actNum;
+    string actNum;
     string name;
     string address;
     float mntBal;

@@ -10,6 +10,7 @@
 #include <iostream>
 #include <string>
 #include <iomanip>
+#include <sstream>
 using namespace std;
 
 //User Defined Libraries
@@ -46,20 +47,23 @@ int main(int argc, char** argv)
  */
 void bnkDat(BankAct *a, int &chkSize, int &depSize, float &nwBlnc)
 {
-    int actNum; //Account number
+    int actNum;//Account number string
+    string actStr;
     float *checks = new float[chkSize]; //Dynamic Array for checks
     float *deposits = new float[depSize]; //Dynamic Array for deposits
     string actName, addrs; //Account name and address
     float blnc, chckDep, chckWtd; // Monthly Balance, amnt of check, amnt of deposit
-
+    
     cout << "Enter account# five digits or less: ";
-    cin >> actNum;
-    while (actNum > 99999 || actNum < 0)//Error checking for 5 digits and positive#
+    cin >> actStr;
+    actNum = stoi(actStr);
+    while (actNum > 99999 || actNum < 0 || actStr.size() > 5)//Error checking for 5 digits and positive#
     {
         cout << "Enter account# five digits or less: ";
-        cin >> actNum;
+        cin >> actStr;
+        actNum = stoi(actStr);
     }
-    a->actNum = actNum;
+    a->actNum = actStr;
 
     cout << "What is the name on the account: ";
     cin.ignore();

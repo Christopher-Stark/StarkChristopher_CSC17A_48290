@@ -10,7 +10,7 @@
 
 struct BankAct
 {
-    int actNum;
+    string actNum;
     string name;
     string address;
     float mntBal;

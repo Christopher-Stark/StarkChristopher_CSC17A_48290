@@ -27,7 +27,7 @@ int main(int argc, char** argv)
     Primes *data;
     cout << "Please enter a positive # between 2-265000 to factor it's primes: ";
     cin >> num;
-    while (num < 0)
+    while (num < 0 || num > 265000)
     {
         cout << "Please enter a positive # between 2-265000 to factor it's primes: ";
         cin >> num;

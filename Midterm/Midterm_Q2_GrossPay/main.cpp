@@ -10,6 +10,7 @@
 #include <iostream>
 #include <iomanip>
 #include <string>
+#include <cmath>
 
 using namespace std;
 
@@ -111,22 +112,30 @@ void totalPay(Employ *a, int size)
 {
     //Remainder when calculating overtime, increase pay rates based off hours
     float remain = 0.00;
-    int str = 20, dHrs = 10, trip = 40, dPay = 2, tPay = 3;
+    int str = 20, dHrs = 20, trip = 40, dPay = 2, tPay = 3;
 
     for (int emp = 0; emp < size; emp++)
     {
         if (a[emp].hrs > trip)//Determines straight,double,triple time amounts
         {
+            remain = fmod(a[emp].hrs,trip);
+            a[emp].totPay += remain * (a[emp].rtPay * tPay);
+            a[emp].totPay += dHrs * (a[emp].rtPay * dPay);
             a[emp].totPay += str * a[emp].rtPay;
-            remain = (a[emp].hrs - trip);
-            a[emp].totPay += (dHrs * a[emp].rtPay) * dPay;
-            a[emp].totPay += (remain * a[emp].rtPay) * tPay;
         }
         else if (a[emp].hrs > str && a[emp].hrs <= trip)//Determines straight,double
         {
-            a[emp].totPay += str * a[emp].rtPay;
-            remain += a[emp].hrs - str;
-            a[emp].totPay += (remain * a[emp].rtPay) * dPay;
+            if (a[emp].hrs == trip)
+            {
+                a[emp].totPay += dHrs * (a[emp].rtPay * dPay);
+                a[emp].totPay += str * a[emp].rtPay;
+            }
+            else
+            {
+                remain = fmod(a[emp].hrs,str);
+                a[emp].totPay += remain * (a[emp].rtPay * dPay);
+                a[emp].totPay += str * a[emp].rtPay;
+            }
         }
         else//Else just standard straight pay
         {
