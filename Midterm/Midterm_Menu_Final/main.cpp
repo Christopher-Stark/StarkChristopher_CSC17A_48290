@@ -47,7 +47,7 @@ int reverseMod(int remain, int mod, int a);
 //Problem 5 Functions
 void displayFact();
 //Problem 6 Functions
-
+void displayFormats();
 //Problem 7 Functions
 Primes *factor(int num, int &index);
 void prntPrm(Primes *a, int num, int index);
@@ -89,7 +89,8 @@ void menu(){
     cout<<"Type 4 for Problem 4 - Phone 4 digit encryption"<<endl;
     cout<<"Type 5 for Problem 5 - Highest factorial for data type before incorrect value/error"<<endl;
     cout<<"Type 6 for Problem 6 - Conversion/NASA Format results"<<endl;
-    cout<<"Type 7 for Problem 7 - Factor primes of integer"<<endl<<endl;
+    cout<<"Type 7 for Problem 7 - Factor primes of integer"<<endl;
+    cout<<"Type 8 to exit program!"<<endl<<endl;
 }
 /**
  * Problem 1 Bank information Main
@@ -155,12 +156,12 @@ void prblm4(){
     errorCheck(num, redo, strNum); //Error checking function
     encrypt(num, ldZero); //Encrypts num data
     cout << "The number after encryption is: ";
-    if(ldZero)
+    if(ldZero)//When converted 3rd digit becomes 0 and gets moved to the start
     {
         cout << "0";
     }
     cout << num << endl;
-    decrypt(num);
+    decrypt(num);//Decrypts number
     cout << "The number after decryption is: " << num << endl;
 }
 /**
@@ -175,6 +176,8 @@ void prblm5(){
  */
 void prblm6(){
     cout<<"****Problem 6 - Conversion/NASA Format results****"<<endl;
+    displayFormats();//Display Function for Conversions
+    cout << endl;
 }
 /**
  * Problem 7 Factor int into primes Main
@@ -185,16 +188,16 @@ void prblm7(){
     Primes *data;
     cout << "Please enter a positive # between 2-265000 to factor it's primes: ";
     cin >> num;
-    while (num < 0 || num > 265000)
+    while (num < 0 || num > 265000)//Error checking 2 being the first prime number
     {
         cout << "Please enter a positive # between 2-265000 to factor it's primes: ";
         cin >> num;
     }
 
-    data = factor(num, index);
-    prntPrm(data, num, index);
+    data = factor(num, index);//Sets struct object data
+    prntPrm(data, num, index);//Displays prime factors
     cout << endl;
-    delete data;
+    delete data;//De-allocates memory
 }
 // ***** My Functions for problem 1 - Bank info *****
 /**
@@ -205,8 +208,8 @@ void prblm7(){
  */
 void bnkDat(BankAct *a, int &chkSize, int &depSize, float &nwBlnc)
 {
-    int actNum;//Account number string
-    string actStr;
+    int actNum;//Account number string to int
+    string actStr;//String for acct num so i can check string size for error checking
     float *checks = new float[chkSize]; //Dynamic Array for checks
     float *deposits = new float[depSize]; //Dynamic Array for deposits
     string actName, addrs; //Account name and address
@@ -214,7 +217,7 @@ void bnkDat(BankAct *a, int &chkSize, int &depSize, float &nwBlnc)
     
     cout << "Enter account# five digits or less: ";
     cin >> actStr;
-    actNum = stoi(actStr);
+    actNum = stoi(actStr);//Allows me to error check number
     while (actNum > 99999 || actNum < 0 || actStr.size() > 5)//Error checking for 5 digits and positive#
     {
         cout << "Enter account# five digits or less: ";
@@ -226,15 +229,15 @@ void bnkDat(BankAct *a, int &chkSize, int &depSize, float &nwBlnc)
     cout << "What is the name on the account: ";
     cin.ignore();
     getline(cin, actName); //Getline for spaces
-    a->name = actName;
+    a->name = actName;//Adds name to struct object
 
     cout << "What is the address for the account: ";
     getline(cin, addrs);
-    a->address = addrs;
+    a->address = addrs;//Adds address to struct object
 
     cout << "What is the monthly starting balance: ";
     cin >> blnc;
-    a->mntBal = blnc;
+    a->mntBal = blnc;//Ads starting balance to struct object
     nwBlnc = blnc;
 
     cout << "How many checks have you written this month?: ";
@@ -244,7 +247,7 @@ void bnkDat(BankAct *a, int &chkSize, int &depSize, float &nwBlnc)
         cout << "What was the amount of written check " << chks + 1 << ": ";
         cin >> chckWtd;
         checks[chks] = chckWtd;
-        a->mntChk[chks] = checks[chks];
+        a->mntChk[chks] = checks[chks];//Inserts withdraw/check amounts to array
         nwBlnc -= chckWtd;
     }
 
@@ -255,11 +258,11 @@ void bnkDat(BankAct *a, int &chkSize, int &depSize, float &nwBlnc)
         cout << "What was the amount of deposit " << chks + 1 << ": ";
         cin >> chckDep;
         deposits[chks] = chckDep;
-        a->mntDep[chks] = deposits[chks];
+        a->mntDep[chks] = deposits[chks];//Inserts deposits into array
         nwBlnc += chckDep;
     }
-    delete[] checks;
-    delete[] deposits;
+    delete[] checks;//Deletes allocation
+    delete[] deposits;//Deletes allocation
 }
 
 /**
@@ -291,7 +294,7 @@ void dataDisplay(const BankAct *a, const int depSize, const int chkSize)
     cout << "Address: " << a->address << endl;
     cout << "Monthly balance: $" << fixed << setprecision(2) << a->mntBal << endl;
     cout << "Checks written: ";
-    if (chkSize == 0)
+    if (chkSize == 0)//If no checks are entered
     {
         cout << "$0.00";
     }
@@ -305,7 +308,7 @@ void dataDisplay(const BankAct *a, const int depSize, const int chkSize)
     }
 
     cout << "\nDeposit amounts: ";
-    if (depSize == 0)
+    if (depSize == 0)//If no deposits are made
     {
         cout << "$0.00";
     }
@@ -525,7 +528,7 @@ bool errorCheck(int &num, bool &error, string strNum)
             cin >> num;
         }
     }
-    while (error);
+    while (error);//Loops if error is still found
 }
 
 /**
@@ -546,7 +549,7 @@ void encrypt(int &num, bool &ldZero)
     num3 = (num3 + 6) % 8;
     if(num3 == 0)
     {
-        ldZero = true;
+        ldZero = true;//Bool for 3rd digit representing 0 when its moved to the front
     }
     num4 = (num4 + 6) % 8;
 
@@ -644,7 +647,30 @@ void displayFact()
 }
 
 // ***** My Functions for problem 6 - Conversions to NASA 4 byte float format
-
+/**
+ * Displays Conversions/IEEE 754 Nasa Hex Format
+ */
+void displayFormats()
+{
+    cout << "\nBase 10: 49.1875 / Base 2: 110001.0011 / Base 8: 61.14 / Base 16: 31.3" << endl;
+    cout << "IEEE 754 Nasa Hex Format: 62600006 / Negative Decimal Format: 9DA00006" << endl;
+    
+    cout << "\nBase 10: 3.07421875 / Base 2: 11.00010011 / Base 8: 3.046 / Base 16: 3.13" << endl;
+    cout << "IEEE 754 Nasa Hex Format: 62600002 / Negative Decimal Format: 9DA00002" << endl;
+    
+    cout << "\nBase 10: 0.2 / Base 2: 0.00110011(repeating) / Base 8: 0.14631463(repeating)"
+            " / Base 16: 0.33(repeating)" << endl;
+    cout << "IEEE 754 Nasa Hex Format: 666666FE / Negative Decimal Format: 99999AFE" << endl;
+    
+    cout << "\nIEEE 754 Nasa Hex Format: 69999902 / "
+            "Decimal Number: 11.0100110011 Base 2" << endl;
+    
+    cout << "IEEE 754 Nasa Hex Format: 69999903 / Decimal Number: 110.10011001 Base 2" << endl;
+    
+    cout << "IEEE 754 Nasa Hex Format: 966667FF / Decimal Number: -.011010011001 Base 2" << endl;
+    
+    cout << "Work shown in .xlsx file in folder problem 6 'Midterm_Conversions_NASA_Format'";
+}
 
 
 // ***** My Functions for problem 7 - Integer Prime Factors
