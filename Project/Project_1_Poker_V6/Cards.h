@@ -20,10 +20,10 @@ struct Cards
 struct Player
 {
     Cards crdData;//Other struct object for access within this structure
-    string name;//Name of player
+    char *name;//C-String array
     string *hand;//Array to hold player 5 card hand
     string *hndSuit;//Array that holds player card suits
-    int credits = 400;//Credits for player with starting amount
+    int credits = 200;//Credits for player with starting amount
 };
 
 
