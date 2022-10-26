@@ -16,7 +16,7 @@ using namespace std;
 //User Defined Libraries
 #include "structs.h"
 //Global Constants
-const int DCKSIZE = 14; //Number of different cards in deck
+const int DCKSIZE = 13; //Number of different cards in deck
 const int SUITSZ = 4; //Number of different suits in deck
 const int CRDSTART = 200;
 const int HSIZE = 5;
@@ -26,7 +26,7 @@ void clearScreen();
 string* createFaceCards();
 string* createSuits();
 void displayMenu(int credits, int &menu);
-void dealerHand();
+void dealHand();
 //Execution begins here!
 
 int main(int argc, char** argv)
@@ -41,12 +41,13 @@ int main(int argc, char** argv)
     switch (menu)
     {
         case 1:
-            cout << "Current credits are " << credits << endl;
+            dealHand();
             break;
         case 2:
-            dealerHand();
+            
             break;
         case 3:
+            cout << "Current credits are " << credits << endl;
             break;
         case 4:
             cout << "You have quit, better luck next time!" << endl;
@@ -67,16 +68,15 @@ void displayMenu(int credits, int &menu)
     {
         clearScreen();
         cout << "------------------------------------------" << endl;
-        cout << "******Welcome to Poker All Stars******" << endl;
+        cout << "*****Welcome to Video Poker All Stars*****" << endl;
         cout << "------------------------------------------" << endl;
-        cout << "   **Standard Poker rules 3 card draw**" << endl;
-        cout << "       **Start with 200 credits**" << endl;
-        cout << "   **Try your hand against the Dealer**" << endl;
+        cout << "   **Standard Poker rules 5 card draw**" << endl;
+        cout << "       **Start with 400 credits**" << endl;
         cout << "------------------------------------------" << endl;
         cout << "           *****Menu options*****" << endl;
-        cout << "1)View current credits" << endl;
-        cout << "2)Play against dealer" << endl;
-        cout << "3)View win/loss stats" << endl;
+        cout << "1)Play Video Poker" << endl;
+        cout << "2)View win/loss stats" << endl;
+        cout << "3)View current credits" << endl;
         cout << "4)Quit!" << endl;
         cout << "Please select a menu option: ";
         cin >> menu;
@@ -91,12 +91,11 @@ void displayMenu(int credits, int &menu)
 string* createFaceCards()
 {
     Player *player = new Player;
-    player->hndCrds = new Deck;
-    player->hndCrds = new string[player->hSize];
+    /*player->hndCrds = new string[player->hSize];
     for(int i = 0; i < player->hSize; i++)
     {
         player->hndCrds[i] = player->[rand() % 6];
-    }
+    }*/
 }
 
 string* createSuits()
@@ -113,7 +112,7 @@ void clearScreen()
     }
 }
 
-void dealerHand()
+void dealHand()
 {
     cout << "|****Dealer Hand****|" << endl;
     cout << "|-------------------|" << endl;

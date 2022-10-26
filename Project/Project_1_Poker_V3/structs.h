@@ -15,8 +15,8 @@
 #define STRUCTS_H
 
 struct Deck {
-    string card[14] = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
-    string suits[4] = {"D", "H", "S", "C"};
+    string card[13] = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
+    string suits[4] = {"C", "D", "H", "S"};
 
 };
 
