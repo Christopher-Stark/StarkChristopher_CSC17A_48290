@@ -54,30 +54,33 @@ int main(int argc, char** argv)
     //Variables for menu, bet amount, and players current credits
     int menu, betAmt;
 
-    displayMenu(player, menu); //Displays Menu
-
-    switch (menu)
+    do
     {
-        case 1:
-            clearScreen();
-            player = hand(player);
-            dealHand(player);
-            betAmt = betAmount(player);
-            player->credits -= betAmt;
-            discard(player);
-            dealHand(player);
-            winConditions(player, betAmt);
-            break;
-        case 2:
-            break;
-        case 3:
-            cout << "Current credits are " << player->credits << endl;
-            break;
-        case 4:
-            cout << "You have quit, better luck next time!" << endl;
-            break;
-        default:
-            cout << "Please enter a valid menu option: ";
+        displayMenu(player, menu); //Displays Menu
+
+        switch (menu)
+        {
+            case 1:
+                clearScreen();
+                player = hand(player);
+                dealHand(player);
+                betAmt = betAmount(player);
+                player->credits -= betAmt;
+                discard(player);
+                dealHand(player);
+                winConditions(player, betAmt);
+                break;
+            case 2:
+                break;
+            case 3:
+                cout << "Current credits are " << player->credits << endl;
+                break;
+            case 4:
+                cout << "You have quit, better luck next time!" << endl;
+                break;
+            default:
+                cout << "Please enter a valid menu option: ";
+        }
     }
     while (menu != 4);
 
@@ -244,7 +247,7 @@ void winConditions(Player *a, int bet)
 
     sortCards(tempCrd, a, tempSut); //Assigns card hand to new sorted dynamic array 
     cout << endl;
-    royalFlush(tempCrd, tempSut, rFlush);//Functions to check if winning hand
+    royalFlush(tempCrd, tempSut, rFlush); //Functions to check if winning hand
     straightFlush(tempCrd, tempSut, sFlush);
     fourKind(tempCrd, fourKnd);
     fullHouse(tempCrd, fHouse);
@@ -253,7 +256,7 @@ void winConditions(Player *a, int bet)
     threeKind(tempCrd, thrKnd);
     twoKind(tempCrd, twoKnd);
     winningAmt(rFlush, sFlush, fourKnd, fHouse, flsh, strt, thrKnd, twoKnd,
-               bet, a); //Function to adjust earnings and display winnings
+            bet, a); //Function to adjust earnings and display winnings
     delete[] tempCrd; //De-Allocate memory for temp sorted array
     delete[] tempSut; //De-Allocate memory for temp sorted array
 }
@@ -502,9 +505,9 @@ void threeKind(const string *card, bool &cond)
 void twoKind(const string *card, bool &cond)
 {
     int count = 0, pair = 0;
-    for(int i = 0; i < HNDSIZE - 1; i++)
+    for (int i = 0; i < HNDSIZE - 1; i++)
     {
-        if(card[i] == card[i+1])
+        if (card[i] == card[i + 1])
         {
             count++;
             i++;
