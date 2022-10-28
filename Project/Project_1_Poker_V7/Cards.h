@@ -14,7 +14,15 @@ struct Cards
     string card[13] = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
     //Suit array for dealing hand
     string suits[4] = {"C", "D", "H", "S"};
-    
+    int hndSize = 5;
+    enum crdNames
+    {
+        TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE, TEN, JACK, QUEEN, KING, ACE
+    };
+    enum stNames
+    {
+        CLUBS, DIAMONDS, HEARTS, SPADES
+    };
 };
 
 struct Player

@@ -20,9 +20,7 @@ using namespace std;
 //User Defined Libraries
 #include "Cards.h"
 //Global Constants
-const int DECKSIZE = 13; //Constants for Deck,Hand,Suit Sizes
-const int HNDSIZE = 5;
-const int SUITSIZE = 4;
+
 //Function Prototypes
 void clearScreen();
 Player *hand(Player *a);
@@ -35,15 +33,15 @@ void winConditions(Player *a, int bet);
 void sortCards(string *card, const Player *b, string *suit);
 int cardValue(const string card);
 void swap(string *a, string *b);
-void royalFlush(const string *card, const string *suit, bool &cond);
-void straightFlush(const string *card, const string *suit, bool &cond);
+void royalFlush(const string *card, const string *suit, bool &cond, const Player *a);
+void straightFlush(const string *card, const string *suit, bool &cond, const Player *a);
 void fourKind(const string *card, bool &cond);
 void fullHouse(const string *card, bool &cond);
-void flush(const string *suit, bool &cond);
-void straight(const string *card, bool &cond);
+void flush(const string *suit, bool &cond, const Player *a);
+void straight(const string *card, bool &cond, const Player *a);
 void threeKind(const string *card, bool &cond);
-void twoKind(const string *card, bool &cond);
-void jacksOrBetter(const string *card, bool &cond);
+void twoKind(const string *card, bool &cond, const Player *a);
+void jacksOrBetter(const string *card, bool &cond, const Player *a);
 void winningAmt(bool Rf, bool Sf, bool frK, bool fHous, bool Flus, bool Strt,
         bool thrK, bool twoK, bool jcks, int bet, Player *a);
 //Execution begins here!
@@ -123,12 +121,12 @@ void displayMenu(const Player *a, int &menu)
 
 Player *hand(Player *a)
 {
-    a->hand = new string[HNDSIZE]; //Dynamic struct string array
-    a->hndSuit = new string[HNDSIZE];
-    for (int i = 0; i < HNDSIZE; i++)//Fills hand with random card/suit
+    a->hand = new string[a->crdData.hndSize]; //Dynamic struct string array
+    a->hndSuit = new string[a->crdData.hndSize];
+    for (int i = 0; i < a->crdData.hndSize; i++)//Fills hand with random card/suit
     {
-        a->hand[i] = a->crdData.card[rand() % DECKSIZE];
-        a->hndSuit[i] = a->crdData.suits[rand() % SUITSIZE];
+        a->hand[i] = a->crdData.card[rand() % a->crdData.ACE];//Enumerator used
+        a->hndSuit[i] = a->crdData.suits[rand() % a->crdData.SPADES];
     }
     return a;
 }
@@ -147,10 +145,16 @@ void dealHand(const Player *a)
     cout << "\n*******Your Hand*******" << endl;
     cout << "-------Card*Suit-------" << endl;
     cout << "-----------------------" << endl;
-    cout << " ";
-    for (int i = 0; i < HNDSIZE; i++)//Displays struct hand array
+    cout << "   ";
+    for (int i = 0; i < a->crdData.hndSize; i++)//Displays struct hand array
     {
-        cout << a->hand[i] << "*" << a->hndSuit[i] << " ";
+        cout << a->hand[i] << "   ";
+    }
+    cout << endl;
+    cout << "   ";
+    for (int i = 0; i < a->crdData.hndSize; i++)//Displays struct hand array
+    {
+        cout << a->hndSuit[i] << "   ";
     }
     cout << endl;
 }
@@ -234,31 +238,31 @@ void replaceDiscard(Player *a, int num)
         }
         index[i] = val - 1; //val - 1 since index starts at 0
         cardNum++;
-        a->hand[val - 1] = a->crdData.card[rand() % DECKSIZE]; //Replace discarded cards
-        a->hndSuit[val - 1] = a->crdData.suits[rand() % SUITSIZE]; //Replace suits for new cards
+        a->hand[val - 1] = a->crdData.card[rand() % a->crdData.ACE]; //Replace discarded cards
+        a->hndSuit[val - 1] = a->crdData.suits[rand() % a->crdData.SPADES]; //Replace suits for new cards
     }
 }
 
 void winConditions(Player *a, int bet)
 {
     //Dynamic arrays of card/suit hand to sort for easier way of tracking winning hands
-    string *tempCrd = new string[HNDSIZE];
-    string *tempSut = new string[HNDSIZE];
+    string *tempCrd = new string[a->crdData.hndSize];
+    string *tempSut = new string[a->crdData.hndSize];
     //Booleans for win conditions and winningAmt function
     bool rFlush, sFlush, fourKnd, fHouse, flsh, strt, thrKnd, twoKnd, jacks;
     
     sortCards(tempCrd, a, tempSut); //Assigns card hand to new sorted dynamic array 
     cout << endl;
 
-    royalFlush(tempCrd, tempSut, rFlush); //Functions to check if winning hand
-    straightFlush(tempCrd, tempSut, sFlush);
+    royalFlush(tempCrd, tempSut, rFlush, a); //Functions to check if winning hand
+    straightFlush(tempCrd, tempSut, sFlush, a);
     fourKind(tempCrd, fourKnd);
     fullHouse(tempCrd, fHouse);
-    flush(tempSut, flsh);
-    straight(tempCrd, strt);
+    flush(tempSut, flsh, a);
+    straight(tempCrd, strt, a);
     threeKind(tempCrd, thrKnd);
-    twoKind(tempCrd, twoKnd);
-    jacksOrBetter(tempCrd, jacks);
+    twoKind(tempCrd, twoKnd, a);
+    jacksOrBetter(tempCrd, jacks, a);
     winningAmt(rFlush, sFlush, fourKnd, fHouse, flsh, strt, thrKnd, twoKnd, jacks,
             bet, a); //Function to adjust earnings and display winnings
     delete[] tempCrd; //De-Allocate memory for temp sorted array
@@ -267,15 +271,15 @@ void winConditions(Player *a, int bet)
 
 void sortCards(string *card, const Player *b, string *suit)
 {
-    for (int i = 0; i < HNDSIZE; i++)
+    for (int i = 0; i < b->crdData.hndSize; i++)
     {
         card[i] = b->hand[i];
         suit[i] = b->hndSuit[i];
     }
 
-    for (int i = 0; i < HNDSIZE; i++)//Nested for loop for bubble sorting
+    for (int i = 0; i < b->crdData.hndSize; i++)//Nested for loop for bubble sorting
     {
-        for (int j = 0; j < HNDSIZE - 1; j++)
+        for (int j = 0; j < b->crdData.hndSize - 1; j++)
         {
             int card1, card2;
             card1 = cardValue(card[j]);
@@ -296,10 +300,10 @@ void swap(string *a, string *b)
     b = temp;
 }
 
-void royalFlush(const string *card, const string *suit, bool &cond)
+void royalFlush(const string *card, const string *suit, bool &cond, const Player *a)
 {
     int count = 1;
-    for (int i = 0; i < HNDSIZE - 1; i++)//Checks for consec. suit
+    for (int i = 0; i < a->crdData.hndSize - 1; i++)//Checks for consec. suit
     {
         if (suit[i] == suit[i + 1])
         {
@@ -317,18 +321,18 @@ void royalFlush(const string *card, const string *suit, bool &cond)
     }
 }
 
-void straightFlush(const string *card, const string *suit, bool &cond)
+void straightFlush(const string *card, const string *suit, bool &cond, const Player *a)
 {
     int num1 = 0, num2 = 0, num3 = 0, num4 = 0, num5 = 0, count = 1;
     bool noFace = true;
-    for (int i = 0; i < HNDSIZE; i++)//Check for non face cards for int conv bool
+    for (int i = 0; i < a->crdData.hndSize; i++)//Check for non face cards for int conv bool
     {
         if (card[i] == "J" || card[i] == "Q" || card[i] == "K" || card[i] == "A")
         {
             noFace = false;
         }
     }
-    for (int i = 0; i < HNDSIZE - 1; i++)//Check consec. suits
+    for (int i = 0; i < a->crdData.hndSize - 1; i++)//Check consec. suits
     {
         if (suit[i] == suit[i + 1])
         {
@@ -404,11 +408,11 @@ void fullHouse(const string *card, bool &cond)
     }
 }
 
-void flush(const string *suit, bool &cond)
+void flush(const string *suit, bool &cond, const Player *a)
 {
     int count = 1;
 
-    for (int i = 0; i < HNDSIZE - 1; i++)//Check consec. suits
+    for (int i = 0; i < a->crdData.hndSize - 1; i++)//Check consec. suits
     {
         if (suit[i] == suit[i + 1])
         {
@@ -426,11 +430,11 @@ void flush(const string *suit, bool &cond)
     }
 }
 
-void straight(const string *card, bool &cond)
+void straight(const string *card, bool &cond, const Player *a)
 {
     int num1 = 0, num2 = 0, num3 = 0, num4 = 0, num5 = 0;
     bool noFace = true;
-    for (int i = 0; i < HNDSIZE; i++)//Check for non face cards for int conv bool
+    for (int i = 0; i < a->crdData.hndSize; i++)//Check for non face cards for int conv bool
     {
         if (card[i] == "J" || card[i] == "Q" || card[i] == "K" || card[i] == "A")
         {
@@ -489,10 +493,10 @@ void threeKind(const string *card, bool &cond)
     }
 }
 
-void twoKind(const string *card, bool &cond)
+void twoKind(const string *card, bool &cond, const Player *a)
 {
     int count = 0, pair = 0;
-    for (int i = 0; i < HNDSIZE - 1; i++)
+    for (int i = 0; i < a->crdData.hndSize - 1; i++)
     {
         if (card[i] == card[i + 1])
         {
@@ -510,10 +514,10 @@ void twoKind(const string *card, bool &cond)
     }
 }
 
-void jacksOrBetter(const string *card, bool &cond)
+void jacksOrBetter(const string *card, bool &cond, const Player *a)
 {
     int count = 1;
-    for (int i = 0; i < HNDSIZE - 1; i++)
+    for (int i = 0; i < a->crdData.hndSize - 1; i++)
     {
         if (card[i] == "J" || card[i] == "Q" || card[i] == "K" || card[i] == "A")
         {
@@ -848,4 +852,21 @@ int cardValue(const string card)
             return 14;
         }
     }
+}
+
+void nonBinFileOut()
+{
+    
+}
+void nonBinFileIn()
+{
+    
+}
+void binFileOut()
+{
+    
+}
+void binFileIn()
+{
+    
 }
