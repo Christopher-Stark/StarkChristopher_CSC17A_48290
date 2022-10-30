@@ -23,59 +23,84 @@ using namespace std;
 
 //Function Prototypes
 void clearScreen();
-Player *hand(Player *a);
+void fileCreateIfNoExist(string fileName);
+void binCreateIfNoExist(string fileName);
+void getPlayerName(Player *a);
+void nonBinFileIn(string fileName, Player *a);
+void nonBinFileOut(string fileName, Player *a);
+void getRecords(string fileName, Player *a);
+void recordUpdate(string fileName, Player *a);
+Player *hand(Player *a, int &index, string &name);
 void displayMenu(const Player *a, int &menu);
+void menuReturn();
+void stats(Player *a, string &name);
 void dealHand(const Player *a);
 int betAmount(const Player *a);
 void discard(Player *a);
 void replaceDiscard(Player *a, int num);
-void winConditions(Player *a, int bet);
-void sortCards(string *card, const Player *b, string *suit);
+void winConditions(Player *a, int bet, int index);
+void sortCards(string *card, const Player *b, char *suit);
 int cardValue(const string card);
 void swap(string *a, string *b);
-void royalFlush(const string *card, const string *suit, bool &cond, const Player *a);
-void straightFlush(const string *card, const string *suit, bool &cond, const Player *a);
+void swap(char *a, char *b);
+void royalFlush(const string *card, const char *suit, bool &cond, const Player *a);
+void straightFlush(const string *card, const char *suit, bool &cond, const Player *a);
 void fourKind(const string *card, bool &cond);
 void fullHouse(const string *card, bool &cond);
-void flush(const string *suit, bool &cond, const Player *a);
+void flush(const char *suit, bool &cond, const Player *a);
 void straight(const string *card, bool &cond, const Player *a);
 void threeKind(const string *card, bool &cond);
 void twoKind(const string *card, bool &cond, const Player *a);
 void jacksOrBetter(const string *card, bool &cond, const Player *a);
 void winningAmt(bool Rf, bool Sf, bool frK, bool fHous, bool Flus, bool Strt,
-        bool thrK, bool twoK, bool jcks, int bet, Player *a);
+        bool thrK, bool twoK, bool jcks, int bet, Player *a, int index);
 //Execution begins here!
 
 int main(int argc, char** argv)
 {
     srand(time(NULL));
     Player *player = new Player; //Dynamic Player struct object
+    
+    //Fresh array that will hold record data
+    player->record = new Player[player->crdData.rcdSize];
+    
     //Variables for menu, bet amount, and players current credits
-    int menu, betAmt;
-    char rtnMenu;
-
+    int menu, betAmt, index = 0;
+    string name; //Keeps track if user name is already entered
+    
+    //Create record files if none exist
+    string txtFile = "VideoPokerRecords.dat";
+    fileCreateIfNoExist(txtFile);
+    string binFile = "BinaryPokerRecords.dat";
+    binCreateIfNoExist(binFile);
+    getRecords(txtFile, player);
+    
     do
     {
         displayMenu(player, menu); //Displays Menu
 
-        switch (menu)
+        switch (menu)//Switch for menu options
         {
             case 1:
-                clearScreen();
-                player = hand(player);
-                dealHand(player);
-                betAmt = betAmount(player);
-                player->credits -= betAmt;
-                discard(player);
-                dealHand(player);
-                winConditions(player, betAmt);
-                cout << "\nType any key to clear screen and return to menu!";
-                cin >> rtnMenu;
+                clearScreen();//clears screen to keep things clean
+                //Asks for player/record name if not already entered
+                player = hand(player, index, name);//function that creates hand
+                dealHand(player);//function that displays hand
+                betAmt = betAmount(player);//function that determines bet amount
+                player->credits -= betAmt;//adjust credits for bet amount
+                discard(player);//function that allows user to discard cards
+                dealHand(player);//display new discarded hand
+                winConditions(player, betAmt, index);//function that handles win cond.
+                recordUpdate(txtFile, player);//updates file with new records
+                menuReturn();//a pseudo pause function for clearing screen when hand is over
                 break;
             case 2:
+                stats(player, name);//determines spot in records and displays stats
+                menuReturn();
                 break;
             case 3:
-                cout << "Current credits are " << player->credits << endl;
+                cout << "\nCurrent credits are " << player->credits << endl;
+                menuReturn();
                 break;
             case 4:
                 cout << "You have quit, better luck next time!" << endl;
@@ -84,9 +109,14 @@ int main(int argc, char** argv)
                 cout << "Please enter a valid menu option: ";
         }
     }
-    while (menu != 4);
+    while (menu != 4 && player->credits != 0);//Loops until out of credits or player quits
+    if (player->credits == 0)
+    {
+        cout << "You have ran out of credits, better luck next time!" << endl;
+    }
 
-    delete player;
+    delete player;//De-allocates Dynamic memory
+    delete[] player->record;
     return 0;
 }
 //Functions
@@ -96,16 +126,16 @@ void displayMenu(const Player *a, int &menu)
     int input;
     do
     {
-        clearScreen();
+        clearScreen();//Clears screen to keep things clean
         cout << "------------------------------------------" << endl;
         cout << "*****Welcome to Video Poker All Stars*****" << endl;
         cout << "------------------------------------------" << endl;
-        cout << "   **Standard Poker rules 5 card draw**" << endl;
+        cout << "          **Jacks or Better**    " << endl;
         cout << "       **Start with 200 credits**" << endl;
         cout << "------------------------------------------" << endl;
         cout << "           *****Menu options*****" << endl;
         cout << "1)Play Video Poker" << endl;
-        cout << "2)View win/loss stats" << endl;
+        cout << "2)View recorded stats" << endl;
         cout << "3)View current credits" << endl;
         cout << "4)Quit!" << endl;
         cout << "Please select a menu option: ";
@@ -119,14 +149,45 @@ void displayMenu(const Player *a, int &menu)
     }
 }
 
-Player *hand(Player *a)
+Player *hand(Player *a, int &index, string &name)
 {
     a->hand = new string[a->crdData.hndSize]; //Dynamic struct string array
-    a->hndSuit = new string[a->crdData.hndSize];
+    a->hndSuit = new char[a->crdData.hndSize]; //Dynamic C-string array
+    string plcHld = "Name";
+    while (!name.size())
+    {
+        cout << "Will record stats up to 10 players!" << endl;
+        cout << "Please enter your user name that is 6 chars long: ";
+        cin >> name;
+        a->name = name;
+        while (name.size() != 6)
+        {
+            cout << "Please enter your user name that is 6 chars long: ";
+            cin >> name;
+            a->name = name;
+        }
+
+        for (int i = 0; i < a->crdData.rcdSize; i++)
+        {
+            if (a->record[i].name == name)
+            {
+                index = i;
+                break;
+            }
+            else if (a->record[i].name == plcHld)
+            {
+                a->record[i].name = name;
+                index = i;
+                break;
+            }
+        }
+    }
+
+
     for (int i = 0; i < a->crdData.hndSize; i++)//Fills hand with random card/suit
     {
-        a->hand[i] = a->crdData.card[rand() % a->crdData.ACE];//Enumerator used
-        a->hndSuit[i] = a->crdData.suits[rand() % a->crdData.SPADES];
+        a->hand[i] = a->crdData.card[rand() % (a->crdData.ACE + 1)]; //Enumerator used
+        a->hndSuit[i] = a->crdData.suits[rand() % (a->crdData.SPADES + 1)];
     }
     return a;
 }
@@ -137,6 +198,36 @@ void clearScreen()
     for (int i = 0; i < size; i++)
     {
         cout << "\n";
+    }
+}
+
+void stats(Player *a, string &name)
+{
+    int index = -1;
+    while (!name.size() || name.size() != 6)
+    {
+        cout << "\nPlease enter your user name that is 6 chars long: ";
+        cin >> name;
+    }
+    for (int i = 0; i < a->crdData.rcdSize; i++)
+    {
+        if (a->record[i].name == name)
+        {
+            index = i;
+        }
+    }
+
+    if (index == -1)
+    {
+        cout << "\nNo records are found with that user name!";
+    }
+    if (index >= 0)
+    {
+        cout << "\nThe player: " << a->record[index].name << endl;
+        cout << "Credits won: " << a->record[index].crdWon << endl;
+        cout << "Credits lost: " << a->record[index].crdLost << endl;
+        cout << "Hands won: " << a->record[index].hndWon << endl;
+        cout << "Hands lost: " << a->record[index].hndLost << endl;
     }
 }
 
@@ -169,7 +260,8 @@ int betAmount(const Player *a)
 
     while (betAmt < 1 || betAmt > 5 || a->credits < betAmt)//Error checking for bet
     {
-        cout << "Please enter a valid bet amount 1-5: ";
+        cout << "\n\nCurrent credits: " << a->credits << endl;
+        cout << "Please enter a valid bet amount 1-5 or no more then current credits: ";
         cin >> betAmt;
         if (a->credits == 0)//If player has no credits
         {
@@ -238,19 +330,19 @@ void replaceDiscard(Player *a, int num)
         }
         index[i] = val - 1; //val - 1 since index starts at 0
         cardNum++;
-        a->hand[val - 1] = a->crdData.card[rand() % a->crdData.ACE]; //Replace discarded cards
-        a->hndSuit[val - 1] = a->crdData.suits[rand() % a->crdData.SPADES]; //Replace suits for new cards
+        a->hand[val - 1] = a->crdData.card[rand() % a->crdData.ACE + 1]; //Replace discarded cards
+        a->hndSuit[val - 1] = a->crdData.suits[rand() % a->crdData.SPADES + 1]; //Replace suits for new cards
     }
 }
 
-void winConditions(Player *a, int bet)
+void winConditions(Player *a, int bet, int index)
 {
     //Dynamic arrays of card/suit hand to sort for easier way of tracking winning hands
     string *tempCrd = new string[a->crdData.hndSize];
-    string *tempSut = new string[a->crdData.hndSize];
+    char *tempSut = new char[a->crdData.hndSize]; //C-String array
     //Booleans for win conditions and winningAmt function
     bool rFlush, sFlush, fourKnd, fHouse, flsh, strt, thrKnd, twoKnd, jacks;
-    
+
     sortCards(tempCrd, a, tempSut); //Assigns card hand to new sorted dynamic array 
     cout << endl;
 
@@ -264,12 +356,12 @@ void winConditions(Player *a, int bet)
     twoKind(tempCrd, twoKnd, a);
     jacksOrBetter(tempCrd, jacks, a);
     winningAmt(rFlush, sFlush, fourKnd, fHouse, flsh, strt, thrKnd, twoKnd, jacks,
-            bet, a); //Function to adjust earnings and display winnings
+            bet, a, index); //Function to adjust earnings and display winnings
     delete[] tempCrd; //De-Allocate memory for temp sorted array
     delete[] tempSut; //De-Allocate memory for temp sorted array
 }
 
-void sortCards(string *card, const Player *b, string *suit)
+void sortCards(string *card, const Player *b, char *suit)
 {
     for (int i = 0; i < b->crdData.hndSize; i++)
     {
@@ -300,7 +392,14 @@ void swap(string *a, string *b)
     b = temp;
 }
 
-void royalFlush(const string *card, const string *suit, bool &cond, const Player *a)
+void swap(char *a, char *b)
+{
+    char *temp = a;
+    a = b;
+    b = temp;
+}
+
+void royalFlush(const string *card, const char *suit, bool &cond, const Player *a)
 {
     int count = 1;
     for (int i = 0; i < a->crdData.hndSize - 1; i++)//Checks for consec. suit
@@ -321,7 +420,7 @@ void royalFlush(const string *card, const string *suit, bool &cond, const Player
     }
 }
 
-void straightFlush(const string *card, const string *suit, bool &cond, const Player *a)
+void straightFlush(const string *card, const char *suit, bool &cond, const Player *a)
 {
     int num1 = 0, num2 = 0, num3 = 0, num4 = 0, num5 = 0, count = 1;
     bool noFace = true;
@@ -377,7 +476,7 @@ void straightFlush(const string *card, const string *suit, bool &cond, const Pla
 
 void fourKind(const string *card, bool &cond)
 {
-    
+
     if (card[0] == card[1] && card[1] == card[2] && card[2] == card[3])
     {
         cond = true;
@@ -408,7 +507,7 @@ void fullHouse(const string *card, bool &cond)
     }
 }
 
-void flush(const string *suit, bool &cond, const Player *a)
+void flush(const char *suit, bool &cond, const Player *a)
 {
     int count = 1;
 
@@ -538,7 +637,7 @@ void jacksOrBetter(const string *card, bool &cond, const Player *a)
 }
 
 void winningAmt(bool Rf, bool Sf, bool frK, bool fHous, bool Flus, bool Strt,
-        bool thrK, bool twoK, bool jcks, int bet, Player *a)
+        bool thrK, bool twoK, bool jcks, int bet, Player *a, int index)
 {
     int winAmt = 0;
     if (Rf)
@@ -571,6 +670,7 @@ void winningAmt(bool Rf, bool Sf, bool frK, bool fHous, bool Flus, bool Strt,
         }
         cout << "You have won " << winAmt << " credits!" << endl;
         cout << "Current credits = " << a->credits << endl;
+        a->record[index].hndWon++;
     }
     else if (Sf)
     {
@@ -602,6 +702,7 @@ void winningAmt(bool Rf, bool Sf, bool frK, bool fHous, bool Flus, bool Strt,
         }
         cout << "You have won " << winAmt << " credits!" << endl;
         cout << "Current credits = " << a->credits << endl;
+        a->record[index].hndWon++;
     }
     else if (frK)
     {
@@ -633,6 +734,7 @@ void winningAmt(bool Rf, bool Sf, bool frK, bool fHous, bool Flus, bool Strt,
         }
         cout << "You have won " << winAmt << " credits!" << endl;
         cout << "Current credits = " << a->credits << endl;
+        a->record[index].hndWon++;
     }
     else if (fHous)
     {
@@ -664,6 +766,7 @@ void winningAmt(bool Rf, bool Sf, bool frK, bool fHous, bool Flus, bool Strt,
         }
         cout << "You have won " << winAmt << " credits!" << endl;
         cout << "Current credits = " << a->credits << endl;
+        a->record[index].hndWon++;
     }
     else if (Flus)
     {
@@ -695,6 +798,7 @@ void winningAmt(bool Rf, bool Sf, bool frK, bool fHous, bool Flus, bool Strt,
         }
         cout << "You have won " << winAmt << " credits!" << endl;
         cout << "Current credits = " << a->credits << endl;
+        a->record[index].hndWon++;
     }
     else if (Strt)
     {
@@ -726,6 +830,7 @@ void winningAmt(bool Rf, bool Sf, bool frK, bool fHous, bool Flus, bool Strt,
         }
         cout << "You have won " << winAmt << " credits!" << endl;
         cout << "Current credits = " << a->credits << endl;
+        a->record[index].hndWon++;
     }
     else if (thrK)
     {
@@ -757,6 +862,7 @@ void winningAmt(bool Rf, bool Sf, bool frK, bool fHous, bool Flus, bool Strt,
         }
         cout << "You have won " << winAmt << " credits!" << endl;
         cout << "Current credits = " << a->credits << endl;
+        a->record[index].hndWon++;
     }
     else if (twoK)
     {
@@ -788,6 +894,7 @@ void winningAmt(bool Rf, bool Sf, bool frK, bool fHous, bool Flus, bool Strt,
         }
         cout << "You have won " << winAmt << " credits!" << endl;
         cout << "Current credits = " << a->credits << endl;
+        a->record[index].hndWon++;
     }
     else if (jcks)
     {
@@ -819,13 +926,17 @@ void winningAmt(bool Rf, bool Sf, bool frK, bool fHous, bool Flus, bool Strt,
         }
         cout << "You have won " << winAmt << " credits!" << endl;
         cout << "Current credits = " << a->credits << endl;
+        a->record[index].hndWon++;
     }
     else
     {
         cout << "You did not have a winning hand!" << endl;
         cout << "       0 credits earned" << endl;
         cout << "    Current credits = " << a->credits << endl;
+        a->record[index].hndLost++;
+        a->record[index].crdLost += bet;
     }
+    a->record[index].crdWon += winAmt;
 }
 
 int cardValue(const string card)
@@ -854,19 +965,116 @@ int cardValue(const string card)
     }
 }
 
-void nonBinFileOut()
+void fileCreateIfNoExist(string fileName)
 {
-    
+    fstream fileIn, fileOut;
+    string frstLine = "VideoPokerRecords";
+    string name = "Name";
+    fileIn.open(fileName, ios::in);
+    if (fileIn.fail())
+    {
+        fileIn.close();
+        fileOut.open(fileName, ios::out);
+        fileOut << frstLine << endl;
+        for (int i = 0; i < 10; i++)
+        {
+            fileOut << name << endl;
+            for (int j = 0; j < 4; j++)
+            {
+                fileOut << 0 << endl;
+            }
+        }
+        fileOut.close();
+    }
+    else
+    {
+        fileIn.close();
+    }
 }
-void nonBinFileIn()
+
+void binCreateIfNoExist(string fileName)
 {
-    
+    fstream fileIn, fileOut;
+    string frstLine = "VideoPokerRecords";
+    fileIn.open(fileName, ios::in | ios::binary);
+    if (fileIn.fail())
+    {
+        fileIn.close();
+        fileOut.open(fileName, ios::out | ios::binary);
+        fileOut << frstLine << endl;
+        fileOut.close();
+    }
+    else
+    {
+        fileIn.close();
+    }
 }
-void binFileOut()
+
+void recordUpdate(string fileName, Player *a)
 {
-    
+    fstream fileOut;
+    string frstLine = "VideoPokerRecords";
+    bool stop = true;
+    fileOut.open(fileName, ios::out);
+    fileOut << frstLine << endl;
+    while (!fileOut.eof() && stop)
+    {
+        for (int i = 0; i < a->crdData.rcdSize; i++)
+        {
+            fileOut << a->record[i].name << endl;
+            fileOut << a->record[i].crdWon << endl;
+            fileOut << a->record[i].crdLost << endl;
+            fileOut << a->record[i].hndWon << endl;
+            fileOut << a->record[i].hndLost << endl;
+        }
+        stop = false;
+    }
+    fileOut.close();
 }
+//Non working*******************
+
+void getRecords(string fileName, Player *a)
+{
+    string nxtLine;
+    fstream fileIn;
+    int loopSz = 50;
+    bool stop = true;
+    fileIn.open(fileName, ios::in);
+
+    while (!fileIn.eof() && stop)
+    {
+        getline(fileIn, nxtLine);
+        for (int i = 0; i < a->crdData.rcdSize; i++)
+        {
+            getline(fileIn, nxtLine);
+            a->record[i].name = nxtLine;
+            getline(fileIn, nxtLine);
+            a->record[i].crdWon = stoi(nxtLine);
+            getline(fileIn, nxtLine);
+            a->record[i].crdLost = stoi(nxtLine);
+            getline(fileIn, nxtLine);
+            a->record[i].hndWon = stoi(nxtLine);
+            getline(fileIn, nxtLine);
+            a->record[i].hndLost = stoi(nxtLine);
+        }
+        stop = false;
+    }
+    fileIn.close();
+}
+
+void binFileOut(string fileName)
+{
+
+}
+
 void binFileIn()
 {
-    
+
+}
+
+void menuReturn()
+{
+    char rtnMenu;
+    cout << "\nType any key to clear screen and return to menu!";
+    cin >> rtnMenu;
 }
