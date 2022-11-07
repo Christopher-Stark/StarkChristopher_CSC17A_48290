@@ -1,0 +1,123 @@
+Project 1 - Video Poker *Jacks or Better* 
+Pseudo Code
+
+Variables
+---------
+FaceCards
+Suits
+PlayerName
+RecordArray
+CreditsWon
+CreditsLost
+HandsWon
+HandsLost
+CurrentCredits
+WinAmount
+MenuInput
+BetAmount
+NonBinFileName
+BinFileName
+GetLineVariable
+
+Check for files
+	While(!File.open)
+		Create NonBinFile
+		Create BinFile
+Read records file for stats = Will need struct array of records & struct stats variables
+	for(i = 0; i < amount of records; i++)
+		While(!File.eof)
+			getLine(Name)
+			records[i]name = GetLineVariable
+			getLine(GamesWon)
+			records[i]GamesWon = GetLineVariable
+			getLine(GamesLost)
+			records[i]GamesLost = GetLineVariable
+			getLine(CreditsWon)
+			records[i]CreditsWon = GetLineVariable
+			getLine(CreditsLost)
+			records[i]CreditsLost = GetLineVariable
+			 
+do
+	Switch(menu)
+		COUT menu with some game info - Video poker type/starting credits
+			1 Deal hand
+			2 Show stats
+			3 Show current credits
+			4 Quit
+		Default
+		COUT Please enter correct menu option
+while(!4 && CurrentCredits !=0)
+	if(CurrentCredits == 0)
+		COUT user is out of credits
+	else
+		COUT user Quit the program 
+
+Menu 1
+	COUT Game info/type Jacks or Better
+	COUT bet amount procedure
+	COUT Ask user to place bet amount
+		while(!1-5)
+			COUT ask user to place bet amount
+			CurrentCredits -= betamount
+	COUT face/suit cards
+	COUT ask user if they want to discard cards
+		if(yes)
+			COUT ask which cards to replace
+				while(!1-5 && duplicate)
+					COUT ask correct cards to replace
+	COUT deal new face/suit cards
+		else
+			Check cards for win conditions
+				if(no win)
+					0 credits earned
+					hand lost++
+					credits lost += bet amount
+				else
+					Determine winning hand
+					WinAmount determined off winningHand + betAmount
+					CurrentCredits += WinAmount
+					Credits won += WinAmount
+					Handswon++
+	COUT win/lost hand
+	COUT win/lost amount
+	Write Records to file = Will need struct array of records & struct stats variables
+		for(i = 0; i < amount of records; i++)
+			records[i]name
+			records[i]CreditsWon
+			records[i]CreditsLost
+			records[i]HandsWon
+			records[i]HandsLost
+	Kick back to main menu/ClearScreen
+Menu 2
+	Read records from file = Will need struct array of records & struct stats variables
+		for(i = 0; i < amount of records; i++)
+			While(!File.eof)
+				getLine(Name)
+				records[i]name = GetLineVariable
+				getLine(GamesWon)
+				records[i]GamesWon = GetLineVariable
+				getLine(GamesLost)
+				records[i]GamesLost = GetLineVariable
+				getLine(CreditsWon)
+				records[i]CreditsWon = GetLineVariable
+				getLine(CreditsLost)
+				records[i]CreditsLost = GetLineVariable
+	COUT ask for PlayerName
+		for(i = 0; i < amount of records; i++)
+			check records[i]name
+			
+		if(records[i]name == PlayerName)
+			COUT records[i]name
+			COUT records[i]CreditsWon
+			COUT records[i]CreditsLost
+			COUT records[i]HandsWon
+			COUT records[i]HandsLost
+		else
+		COUT PlayerName does not exist
+	Kick back to main menu/ClearScreen	
+Menu 3
+	COUT display CurrentCredits
+Menu 4
+	Quit program
+	
+	 
