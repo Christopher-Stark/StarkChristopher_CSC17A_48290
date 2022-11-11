@@ -8,13 +8,12 @@
 #ifndef DATE_H
 #define DATE_H
 
-class Date
-{
+class Date {
 private:
     int month;
     int day;
     int year;
-    
+
 public:
     void setMonth(int);
     void setDay(int);
@@ -23,29 +22,30 @@ public:
     int getDay() const;
     int getYear() const;
 };
+
 //Member Functions
-void Date::setMonth(int m)
-{
+
+void Date::setMonth(int m) {
     month = m;
 }
-void Date::setDay(int d)
-{
+
+void Date::setDay(int d) {
     day = d;
 }
-void Date::setYear(int y)
-{
+
+void Date::setYear(int y) {
     year = y;
 }
-int Date::getDay() const
-{
+
+int Date::getDay() const {
     return day;
 }
-int Date::getMonth() const
-{
+
+int Date::getMonth() const {
     return month;
 }
-int Date::getYear() const
-{
+
+int Date::getYear() const {
     return year;
 }
 #endif /* DATE_H */
