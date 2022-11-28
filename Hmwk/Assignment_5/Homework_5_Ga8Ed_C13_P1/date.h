@@ -15,9 +15,11 @@ private:
     int year;
 
 public:
+    //Mutators
     void setMonth(int);
     void setDay(int);
     void setYear(int);
+    //Accessors
     int getMonth() const;
     int getDay() const;
     int getYear() const;

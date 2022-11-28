@@ -28,8 +28,11 @@ int main(int argc, char** argv)
     PersonData frnd;
     PersonData fam;
     //Set Data per instance
+    cout << "Self information!" << endl;
     setData(self);
+    cout << "Friend information!" << endl;
     setData(frnd);
+    cout << "Family information!" << endl;
     setData(fam);
     //Display data
     display(self, frnd, fam);
