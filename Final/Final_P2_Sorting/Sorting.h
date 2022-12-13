@@ -41,7 +41,7 @@ T* Prob2Sort<T>::sortArray(const T* a, int rows, int cols, int cSrt, bool asc) {
     
     T *temp = new T[rows * cols];
     for(int i = 0; i < rows; i++){
-        for(int j = 0; j < cols-1; j++){
+        for(int j = 0; j < cols; j++){
             temp[i * cols + j] = a[i * cols + j];
             //if(j = cSrt && a){
             //    

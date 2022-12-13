@@ -33,11 +33,6 @@ int main(int argc, char** argv){
     }
     infile.close();
     cout << endl;
-    cout << "Test:::" << endl;
-    for(int i = 0; i < 10*16+8;i++){
-        cout << ch2p[i];
-    }
-    cout << endl;
     cout << "Sorting on which column" << endl;
     int column;
     cin>>column;

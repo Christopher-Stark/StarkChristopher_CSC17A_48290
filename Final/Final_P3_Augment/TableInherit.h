@@ -38,9 +38,10 @@ public:
                 }
             }
         }
-        //delete temp;
-        //delete rSum;
-        //delete cSum;
+        //Could not de allocate because const, would not let me = arrays unless const
+        //delete[] temp;
+        //delete[] rSum;
+        //delete[] cSum;
     }
 
     ~Prob3TableInherited() {
