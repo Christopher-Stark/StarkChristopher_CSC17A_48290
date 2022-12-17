@@ -39,8 +39,6 @@ int main(int argc, char** argv)
     result = value*hex;
     result >>= 27;
     cout << "Hex result after shift: " << result << endl;
-    
-    
     return 0;
 }
 //Functions

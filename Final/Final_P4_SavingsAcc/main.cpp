@@ -20,6 +20,7 @@ using namespace std;
 //Execution begins here!
 
 int main(int argc, char** argv){
+    srand(time(0));//Seed for randomness
     SavingsAccount mine(-300);
     for(int i = 1; i <= 10; i++){
         mine.Transaction((float) (rand() % 500)*(rand() % 3 - 1));

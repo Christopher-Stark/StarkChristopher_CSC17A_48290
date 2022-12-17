@@ -18,30 +18,22 @@ public:
     Prob3TableInherited(const char *file, int r, int c) : Prob3Table<T>(file, r, c) { //Constructor
         augTable = new T[(r + 1) * (c + 1)];
         Prob3Table<T> tempObj(file, r, c);
-        const T *temp = new T[r*c];
-        const T *rSum = new T[r];
-        const T *cSum = new T[c];
-        rSum = tempObj.getRowSum();
-        cSum = tempObj.getColSum();
-        temp = tempObj.getTable();
+        
+        //Augmenting row/col by 1
         for (int i = 0; i <= r; i++) {
             for (int j = 0; j <= c; j++) {
-                augTable[i * (c+1) + j] = temp[i * (c) + j];
+                augTable[i * (c+1) + j] = tempObj.getTable()[i * (c) + j];
                 if(j == c){
-                    augTable[i * (c+1) + j] = rSum[i];
+                    augTable[i * (c+1) + j] = tempObj.getRowSum()[i];
                 }
                 if(i == r){
-                   augTable[i * (c+1) + j] = cSum[j]; 
+                   augTable[i * (c+1) + j] = tempObj.getColSum()[j]; 
                 }
                 if(j == c && i == r){
                    augTable[i * (c+1) + j] = tempObj.getGrandTotal(); 
                 }
             }
         }
-        //Could not de allocate because const, would not let me = arrays unless const
-        //delete[] temp;
-        //delete[] rSum;
-        //delete[] cSum;
     }
 
     ~Prob3TableInherited() {

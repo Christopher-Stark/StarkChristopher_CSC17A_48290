@@ -9,6 +9,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <fstream>
+#include <algorithm>
 using namespace std;
 
 //User Defined Libraries
@@ -36,15 +37,14 @@ int main(int argc, char** argv){
     cout << "Sorting on which column" << endl;
     int column;
     cin>>column;
-    char *zc = rc.sortArray(ch2p, 10, 16, column, ascending);
+    //char *zc = rc.sortArray(ch2p, 10, 16, column, ascending);
     for(int i = 0; i < 10; i++){
         for(int j = 0; j < 16; j++){
-            cout << ch2p[i * 16 + j];
+            //cout << zc[i * 16 + j];
         }
     }
-    delete []zc;
+    //delete []zc;
     cout << endl;
-
     return 0;
 }
 //Functions
