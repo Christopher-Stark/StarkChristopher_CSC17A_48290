@@ -19,7 +19,7 @@ private:
     int hLost;
 public:
     //Default Constructors - **Polymorphism & Overloaded**
-    Player(){
+    Player():Hand(){
         name = "Name", cWon = 0, cLost = 0, hWon = 0, hLost = 0;
     }
     Player(string n, int cW, int cL, int hW, int hL){

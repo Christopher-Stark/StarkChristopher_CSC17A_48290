@@ -9,11 +9,14 @@
 #include "Deck.h"
 #include "Hand.h"
 
+
 void Hand::setInitialHand(){
+    fHand = new string[HSIZE]{};
+    sHand = new string[HSIZE]{};
     for(int i = 0; i < HSIZE; i++)//Fills hand with random card/suit
     {
-        fHand[i] = getFace(rand() % (ACE + 1)); //Enumerator used
-        sHand[i] = getSuit(rand() % (SPADES + 1));
+        setFaceHand(i); //Enumerator used
+        setSuitHand(i);
     }
 }
 
@@ -28,6 +31,7 @@ void Hand::setSuitHand(int index){
 void Hand::winCredits(int win){
     credits += win;
 }
+
 void Hand::loseCredits(int lose){
     credits -= lose;
 }

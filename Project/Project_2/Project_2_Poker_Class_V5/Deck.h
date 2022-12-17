@@ -12,10 +12,9 @@
 #include <string>
 #include <ctime>
 using namespace std;
-
 //Const Variables for size
 const int FSIZE = 13;
-const int SSIZE = 5;
+const int SSIZE = 4;
 
 //Enumerator
 enum crdNames // Enumeration for cards and suits

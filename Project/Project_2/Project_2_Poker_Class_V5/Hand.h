@@ -19,8 +19,6 @@ private://**Private Members**
 public:
     //Default Constructor
     Hand() {
-        fHand = new string[HSIZE];
-        sHand = new string[HSIZE];
         credits = 200;
     }
     //Destructor **Destructor**

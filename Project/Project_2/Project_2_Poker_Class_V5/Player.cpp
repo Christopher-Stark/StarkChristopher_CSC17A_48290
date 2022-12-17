@@ -13,19 +13,19 @@ void Player::setName(string n){
 }
 
 void Player::setCreditsWon(int c){
-    cWon = c;
+    cWon += c;
 }
 
 void Player::setCreditsLost(int c){
-    cLost = c;
+    cLost += c;
 }
 
 void Player::setHandWon(int h){
-    hWon = h;
+    hWon += h;
 }
 
 void Player::setHandLost(int h){
-    hLost = h;
+    hLost += h;
 }
 
 Player Player::operator++(){
